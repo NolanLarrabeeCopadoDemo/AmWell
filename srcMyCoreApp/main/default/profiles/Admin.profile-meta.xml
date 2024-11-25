@@ -9,6 +9,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Pricebook2.Region__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Pricebook2.Segment__c</field>
         <readable>true</readable>
     </fieldPermissions>
