@@ -9,6 +9,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Onboarding_Task__c.Active__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Onboarding_Task__c.Onboarding_Task_Type__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Pricebook2.Region__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -19,6 +29,10 @@
     </fieldPermissions>
     <layoutAssignments>
         <layout>Bicycle__c-Bicycle Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Onboarding_Task__c-Onboarding Task Layout</layout>
+        <recordType>Onboarding_Task__c.New</recordType>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Pricebook2-Price Book Layout</layout>
@@ -44,9 +58,23 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
+        <object>Onboarding_Task__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>Pricebook2</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <recordTypeVisibilities>
+        <default>true</default>
+        <recordType>Onboarding_Task__c.New</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
     <userLicense>Salesforce</userLicense>
     <userPermissions>
         <enabled>true</enabled>
@@ -207,10 +235,6 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>CreatePackaging</name>
-    </userPermissions>
-    <userPermissions>
-        <enabled>true</enabled>
-        <name>CreateReductionOrder</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
@@ -511,6 +535,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>ManageExchangeConfig</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ManageFilesAndAttachments</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
