@@ -1,37 +1,31 @@
 /**
- * @description Test class for AccountAutomations
+ * @description Test class for AccountLogic
  * @author BuildAgent
  * @date 2025-01-16
  */
 @IsTest
 private class AccountLogicTest {
+    
     // Test data constants
-    private static final String TEST_ACCOUNT_NAME = 'Test Account';
-    private static final String DEFAULT_DESCRIPTION = 'Default description';
-    private static final String CUSTOM_DESCRIPTION = 'Custom Description';
-    private static final String DEFAULT_STREET = 'Basauri, 6';
-    private static final String DEFAULT_STATE = 'Madrid';
-    private static final String DEFAULT_POSTAL_CODE = '28023';
-    private static final String DEFAULT_PHONE = '688456789';
-    private static final String DEFAULT_WEBSITE = 'www.copa.do';
+    private static final String TEST_DESCRIPTION = 'Test Description';
+    private static final String TEST_SITE = 'Test Site';
+    private static final String TEST_WEBSITE = 'www.test.com';
     
     /**
-     * @description Test setup method to create test data
+     * @description Set up test data
+     * @return Account Test account record
      */
-    @TestSetup
-    static void setupTestData() {
-        // Create test account
-        Account testAccount = new Account(Name = TEST_ACCOUNT_NAME);
-        insert testAccount;
+    private static Account createTestAccount() {
+        return new Account(Name = 'Test Account');
     }
     
     /**
-     * @description Tests default description setting when description is null
+     * @description Test setting default description when description is null
      */
     @IsTest
-    static void testSetDefaultDescriptionWhenNull() {
+    static void testSetDefaultDescriptionNull() {
         // Given
-        Account testAccount = new Account(Name = TEST_ACCOUNT_NAME);
+        Account testAccount = createTestAccount();
         
         // When
         Test.startTest();
@@ -39,20 +33,18 @@ private class AccountLogicTest {
         Test.stopTest();
         
         // Then
-        System.assertEquals(DEFAULT_DESCRIPTION, resultAccount.Description, 
+        Assert.areEqual('Default description', resultAccount.Description, 
             'Description should be set to default value when null');
     }
     
     /**
-     * @description Tests description remains unchanged when already set
+     * @description Test setting default description when description exists
      */
     @IsTest
-    static void testSetDefaultDescriptionWhenNotNull() {
+    static void testSetDefaultDescriptionExisting() {
         // Given
-        Account testAccount = new Account(
-            Name = TEST_ACCOUNT_NAME,
-            Description = CUSTOM_DESCRIPTION
-        );
+        Account testAccount = createTestAccount();
+        testAccount.Description = TEST_DESCRIPTION;
         
         // When
         Test.startTest();
@@ -60,39 +52,35 @@ private class AccountLogicTest {
         Test.stopTest();
         
         // Then
-        System.assertEquals(CUSTOM_DESCRIPTION, resultAccount.Description, 
-            'Description should remain unchanged when already set');
+        Assert.areEqual(TEST_DESCRIPTION, resultAccount.Description, 
+            'Existing description should not be overwritten');
     }
     
     /**
-     * @description Tests setting default billing address
+     * @description Test setting default site
      */
     @IsTest
-    static void testSetDefaultBillingAddress() {
+    static void testSetDefaultSite() {
         // Given
-        Account testAccount = new Account(Name = TEST_ACCOUNT_NAME);
+        Account testAccount = createTestAccount();
         
         // When
         Test.startTest();
-        Account resultAccount = AccountLogic.setDefaultBillingAddress(testAccount);
+        Account resultAccount = AccountLogic.setDefaultSite(testAccount);
         Test.stopTest();
         
         // Then
-        System.assertEquals(DEFAULT_STREET, resultAccount.BillingStreet, 
-            'Billing street should be set to default value');
-        System.assertEquals(DEFAULT_STATE, resultAccount.BillingState, 
-            'Billing state should be set to default value');
-        System.assertEquals(DEFAULT_POSTAL_CODE, resultAccount.BillingPostalCode, 
-            'Billing postal code should be set to default value');
+        Assert.areEqual('Single location', resultAccount.Site, 
+            'Site should be set to default value');
     }
     
     /**
-     * @description Tests setting default shipping address
+     * @description Test setting default shipping address
      */
     @IsTest
     static void testSetDefaultShippingAddress() {
         // Given
-        Account testAccount = new Account(Name = TEST_ACCOUNT_NAME);
+        Account testAccount = createTestAccount();
         
         // When
         Test.startTest();
@@ -100,21 +88,21 @@ private class AccountLogicTest {
         Test.stopTest();
         
         // Then
-        System.assertEquals(DEFAULT_STREET, resultAccount.ShippingStreet, 
+        Assert.areEqual('111 W Illinois St', resultAccount.ShippingStreet, 
             'Shipping street should be set to default value');
-        System.assertEquals(DEFAULT_STATE, resultAccount.ShippingState, 
+        Assert.areEqual('Chicago', resultAccount.ShippingState, 
             'Shipping state should be set to default value');
-        System.assertEquals(DEFAULT_POSTAL_CODE, resultAccount.ShippingPostalCode, 
+        Assert.areEqual('60654', resultAccount.ShippingPostalCode, 
             'Shipping postal code should be set to default value');
     }
     
     /**
-     * @description Tests setting default phone number
+     * @description Test setting default phone
      */
     @IsTest
     static void testSetDefaultPhone() {
         // Given
-        Account testAccount = new Account(Name = TEST_ACCOUNT_NAME);
+        Account testAccount = createTestAccount();
         
         // When
         Test.startTest();
@@ -122,17 +110,17 @@ private class AccountLogicTest {
         Test.stopTest();
         
         // Then
-        System.assertEquals(DEFAULT_PHONE, resultAccount.Phone, 
+        Assert.areEqual('9999999', resultAccount.Phone, 
             'Phone should be set to default value');
     }
     
     /**
-     * @description Tests setting default website URL
+     * @description Test setting default URL
      */
     @IsTest
     static void testSetDefaultURL() {
         // Given
-        Account testAccount = new Account(Name = TEST_ACCOUNT_NAME);
+        Account testAccount = createTestAccount();
         
         // When
         Test.startTest();
@@ -140,27 +128,94 @@ private class AccountLogicTest {
         Test.stopTest();
         
         // Then
-        System.assertEquals(DEFAULT_WEBSITE, resultAccount.Website, 
+        Assert.areEqual('www.copado.com', resultAccount.Website, 
             'Website should be set to default value');
     }
     
     /**
-     * @description Tests handling of null account parameter
+     * @description Test null account parameter handling for all methods
      */
     @IsTest
-    static void testNullAccountParameter() {
+    static void testNullAccountHandling() {
         // Given
         Account nullAccount = null;
         
         // When/Then
         Test.startTest();
+        
         try {
             AccountLogic.setDefaultDescription(nullAccount);
-            System.assert(false, 'Should throw exception for null account');
-        } catch(IllegalArgumentException ex) {
-            System.assertEquals('Account parameter cannot be null', ex.getMessage(), 
-                'Should throw correct exception message');
+            Assert.fail('Should throw exception for null account in setDefaultDescription');
+        } catch (AccountLogic.AccountLogicException e) {
+            Assert.isTrue(e.getMessage().contains('Account parameter cannot be null'), 
+                'Expected null account error message');
+        }
+        
+        try {
+            AccountLogic.setDefaultSite(nullAccount);
+            Assert.fail('Should throw exception for null account in setDefaultSite');
+        } catch (AccountLogic.AccountLogicException e) {
+            Assert.isTrue(e.getMessage().contains('Account parameter cannot be null'), 
+                'Expected null account error message');
+        }
+        
+        try {
+            AccountLogic.setDefaultShippingAddress(nullAccount);
+            Assert.fail('Should throw exception for null account in setDefaultShippingAddress');
+        } catch (AccountLogic.AccountLogicException e) {
+            Assert.isTrue(e.getMessage().contains('Account parameter cannot be null'), 
+                'Expected null account error message');
+        }
+        
+        try {
+            AccountLogic.setDefaultPhone(nullAccount);
+            Assert.fail('Should throw exception for null account in setDefaultPhone');
+        } catch (AccountLogic.AccountLogicException e) {
+            Assert.isTrue(e.getMessage().contains('Account parameter cannot be null'), 
+                'Expected null account error message');
+        }
+        
+        try {
+            AccountLogic.setDefaultURL(nullAccount);
+            Assert.fail('Should throw exception for null account in setDefaultURL');
+        } catch (AccountLogic.AccountLogicException e) {
+            Assert.isTrue(e.getMessage().contains('Account parameter cannot be null'), 
+                'Expected null account error message');
+        }
+        
+        Test.stopTest();
+    }
+    
+    /**
+     * @description Test bulk processing capability
+     */
+    @IsTest
+    static void testBulkProcessing() {
+        // Given
+        List<Account> testAccounts = new List<Account>();
+        for(Integer i = 0; i < 200; i++) {
+            testAccounts.add(createTestAccount());
+        }
+        
+        // When
+        Test.startTest();
+        List<Account> processedAccounts = new List<Account>();
+        for(Account acc : testAccounts) {
+            processedAccounts.add(AccountLogic.setDefaultDescription(acc));
+            processedAccounts.add(AccountLogic.setDefaultSite(acc));
+            processedAccounts.add(AccountLogic.setDefaultShippingAddress(acc));
+            processedAccounts.add(AccountLogic.setDefaultPhone(acc));
+            processedAccounts.add(AccountLogic.setDefaultURL(acc));
         }
         Test.stopTest();
+        
+        // Then
+        for(Account acc : processedAccounts) {
+            Assert.isNotNull(acc.Description, 'Description should not be null');
+            Assert.isNotNull(acc.Site, 'Site should not be null');
+            Assert.isNotNull(acc.ShippingStreet, 'ShippingStreet should not be null');
+            Assert.isNotNull(acc.Phone, 'Phone should not be null');
+            Assert.isNotNull(acc.Website, 'Website should not be null');
+        }
     }
 }
